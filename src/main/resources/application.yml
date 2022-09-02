@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: prometheus-server
+  profiles:
+    active: dev
+  config:
+    import: optional:configserver:https://prometheus-config.herokuapp.com/
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.Oracle9iDialect
+#  cloud:
+#    config:
+#      uri: https://prometheus-config.herokuapp.com
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /
+server:
+  port: 8000
