@@ -1,35 +1,33 @@
 package tik.prometheus.rest.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import tik.prometheus.rest.Configurations;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import tik.prometheus.rest.models.Sensor;
-import tik.prometheus.rest.repositories.SensorRecordRepos;
 import tik.prometheus.rest.repositories.SensorRepos;
 
 import java.util.List;
 
 @RestControllerAdvice
 @RestController
+@RequestMapping("/sensors")
 public class SensorController {
-    @Autowired
-    Configurations configurations;
-
-    @Autowired
-    SensorRecordRepos sensorRecordRepos;
 
     @Autowired
     SensorRepos sensorRepos;
 
-    @GetMapping("/hello")
-    public Configurations getStuff() {
-        return configurations;
+    @GetMapping()
+    public List<Sensor> getSensors() {
+        return sensorRepos.findAll();
     }
 
-    @GetMapping("/test-db")
-    public List<Sensor> testDb() {
-        return sensorRepos.findAll();
+    @PutMapping("/{id}")
+    public ResponseEntity<Sensor> updateSensor(@PathVariable Long id, @RequestBody Sensor updateSensor) {
+        return sensorRepos.findById(id).map(sensor -> {
+            sensor.setAddress(updateSensor.getAddress());
+            sensor.setType(updateSensor.getType());
+            sensor.setUnit(updateSensor.getUnit());
+            return ResponseEntity.ok(sensorRepos.save(sensor));
+        }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

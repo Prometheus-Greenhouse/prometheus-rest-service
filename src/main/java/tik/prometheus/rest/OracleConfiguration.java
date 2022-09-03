@@ -2,7 +2,6 @@ package tik.prometheus.rest;
 
 import oracle.jdbc.pool.OracleDataSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,7 +29,6 @@ public class OracleConfiguration {
         dataSource.setUser(username);
         dataSource.setPassword(password);
         String url = "jdbc:oracle:thin:@//%s:%s/%s".formatted(host, port, service);
-        System.out.println(url);
         dataSource.setURL(url);
         dataSource.setImplicitCachingEnabled(true);
         dataSource.setFastConnectionFailoverEnabled(true);

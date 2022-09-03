@@ -22,5 +22,9 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /
-server:
-  port: 8000
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: debug
