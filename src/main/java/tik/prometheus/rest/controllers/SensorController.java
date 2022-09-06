@@ -1,14 +1,14 @@
 package tik.prometheus.rest.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tik.prometheus.rest.dtos.SensorDTO;
 import tik.prometheus.rest.models.Sensor;
 import tik.prometheus.rest.repositories.SensorRepos;
 import tik.prometheus.rest.services.SensorService;
-
-import java.util.List;
 
 @RestControllerAdvice
 @RestController
@@ -21,8 +21,9 @@ public class SensorController {
     SensorService sensorService;
 
     @GetMapping()
-    public ResponseEntity<List<SensorDTO>> getSensors() {
-        return ResponseEntity.ok(sensorService.getSensors());
+    public ResponseEntity<Page<SensorDTO>> getSensors(Pageable pageable) {
+        return ResponseEntity.ok(sensorService.getSensors(pageable));
+
     }
 
     @PutMapping("/{id}")
