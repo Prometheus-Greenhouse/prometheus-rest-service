@@ -11,7 +11,6 @@ import tik.prometheus.rest.repositories.SensorRepos;
 import tik.prometheus.rest.services.SensorService;
 
 @RestControllerAdvice
-@RestController
 @RequestMapping("/sensors")
 public class SensorController {
 

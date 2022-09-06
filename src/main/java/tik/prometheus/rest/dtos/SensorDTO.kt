@@ -1,8 +1,6 @@
 package tik.prometheus.rest.dtos
 
-import tik.prometheus.rest.ObjectUtils
-import tik.prometheus.rest.models.Sensor
-import tik.prometheus.rest.models.toSensorDTO
+import tik.prometheus.rest.reflectionToString
 
 class SensorDTO(
     var id: Long? = null,
@@ -14,7 +12,7 @@ class SensorDTO(
 ) {
 
     override fun toString(): String {
-        return ObjectUtils.reflectionToString(this);
+        return reflectionToString(this);
     }
 
 }

@@ -7,10 +7,10 @@ spring:
     import: optional:configserver:https://prometheus-config.herokuapp.com/
 #  datasource:
 #    driver-class-name: oracle.jdbc.OracleDriver
-#  jpa:
-#    show-sql: false
-#    hibernate:
-#      ddl-auto: none
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
 #    properties:
 #      hibernate:
 #        dialect: org.hibernate.dialect.Oracle9iDialect
