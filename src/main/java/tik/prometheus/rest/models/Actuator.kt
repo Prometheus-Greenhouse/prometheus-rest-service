@@ -12,6 +12,7 @@ class Actuator(
     var id: Long? = null,
     var type: String? = null,
     var unit: String? = null,
+    var localId: String? = null,
 ) {
 
 }
