@@ -1,9 +1,6 @@
 package tik.prometheus.rest.models
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 class Actuator(
@@ -13,6 +10,6 @@ class Actuator(
     var type: String? = null,
     var unit: String? = null,
     var localId: String? = null,
-) {
-
-}
+    @OneToOne(mappedBy = "actuator")
+    var allocation: ActuatorAllocation? = null,
+)

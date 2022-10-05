@@ -8,9 +8,8 @@
         <version>2.7.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-
     <groupId>tik.prometheus</groupId>
-    <artifactId>rest</artifactId>
+    <artifactId>PrometheusRestService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Prometheus Rest Service</name>
     <description>Prometheus REST Service</description>
@@ -19,7 +18,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
         <kotlin.version>1.7.10</kotlin.version>
-        <spring-cloud.version>2021.0.3</spring-cloud.version>
+        <spring-cloud.version>2021.0.4</spring-cloud.version>
     </properties>
     <dependencies>
         <dependency>
@@ -110,6 +109,10 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -135,7 +138,7 @@
                 <executions>
                     <execution>
                         <id>compile</id>
-                        <phase>compile</phase>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>

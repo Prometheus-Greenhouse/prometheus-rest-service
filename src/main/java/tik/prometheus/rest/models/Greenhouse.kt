@@ -1,5 +1,6 @@
 package tik.prometheus.rest.models
 
+import tik.prometheus.rest.constants.GreenhouseType
 import javax.persistence.*
 
 @Entity
@@ -9,11 +10,11 @@ class Greenhouse(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
     var farmId: Long? = null,
-    var type: String? = null,
-    var area: Float? = null,
-    var height: Float? = null,
-    var width: Float? = null,
-    var length: Float? = null,
-    var cultivationArea: Float? = null,
+    var type: String = GreenhouseType.NORMAL.value,
+    var area: Float = 0f,
+    var height: Float = 0f,
+    var width: Float = 0f,
+    var length: Float = 0f,
+    var cultivationArea: Float = 0f,
 ) {
 }

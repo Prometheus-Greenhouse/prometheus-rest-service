@@ -1,12 +1,10 @@
 package tik.prometheus.rest.models
 
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.IdClass
+import javax.persistence.*
 
 @Entity
 @IdClass(ActuatorAllocationId::class)
-class ActuatorAllocation(
+data class ActuatorAllocation(
     @Id
     var greenhouseId: Long? = null,
     @Id
@@ -16,4 +14,11 @@ class ActuatorAllocation(
     var height: Float? = null,
 ) {
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "actuatorId", insertable = false, updatable = false)
+    lateinit var actuator: Actuator
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "greenhouseId", insertable = false, updatable = false)
+    lateinit var greenhouse: Greenhouse
 }

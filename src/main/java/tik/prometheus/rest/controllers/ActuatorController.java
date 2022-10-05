@@ -6,14 +6,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tik.prometheus.rest.dtos.ActuatorDTO;
 import tik.prometheus.rest.models.Actuator;
 import tik.prometheus.rest.repositories.ActuatorRepos;
+import tik.prometheus.rest.services.ActuatorService;
 
 @RestControllerAdvice
 @RequestMapping("/actuators")
 public class ActuatorController {
     @Autowired
     ActuatorRepos actuatorRepos;
+
+    @Autowired
+    ActuatorService service;
 
     @PostMapping()
     public ResponseEntity<Actuator> post(Actuator actuator) {
@@ -22,8 +27,8 @@ public class ActuatorController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<Actuator>> all(Pageable pageable) {
-        return ResponseEntity.ok(actuatorRepos.findAll(pageable));
+    public ResponseEntity<Page<ActuatorDTO>> all(Pageable pageable, @RequestParam Long greenhouseId) {
+        return ResponseEntity.ok(service.getActuators(greenhouseId, pageable));
     }
 
     @GetMapping("/{id}")

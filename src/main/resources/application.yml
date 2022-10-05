@@ -5,8 +5,8 @@ spring:
     active: dev
   config:
     import: optional:configserver:https://prometheus-config.herokuapp.com/
-#  datasource:
-#    driver-class-name: oracle.jdbc.OracleDriver
+  #  datasource:
+  #    driver-class-name: oracle.jdbc.OracleDriver
   jpa:
     show-sql: false
     hibernate:
@@ -28,3 +28,9 @@ spring:
 #      springframework:
 #        boot:
 #          autoconfigure: debug
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
