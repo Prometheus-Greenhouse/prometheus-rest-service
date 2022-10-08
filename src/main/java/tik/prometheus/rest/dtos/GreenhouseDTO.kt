@@ -2,7 +2,7 @@ package tik.prometheus.rest.dtos
 
 open class GreenhouseSummaryDTO(
     open var id: Long? = null,
-    open var farmId: Long,
+    open var farmId: Long? = null,
     open var type: String,
     open var area: Float,
     open var height: Float,
@@ -13,7 +13,7 @@ open class GreenhouseSummaryDTO(
 
 class GreenhouseDTO(
     override var id: Long? = null,
-    override var farmId: Long,
+    override var farmId: Long? = null,
     override var type: String,
     override var area: Float,
     override var height: Float,
