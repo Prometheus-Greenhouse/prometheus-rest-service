@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tik.prometheus.rest.dtos.ActuatorDTO;
+import tik.prometheus.rest.dtos.ActuatorLiteDTO;
 import tik.prometheus.rest.models.Actuator;
 import tik.prometheus.rest.repositories.ActuatorRepos;
 import tik.prometheus.rest.services.ActuatorService;
@@ -20,22 +21,14 @@ public class ActuatorController {
     @Autowired
     ActuatorService service;
 
-    @PostMapping()
-    public ResponseEntity<Actuator> post(Actuator actuator) {
-        actuatorRepos.save(actuator);
-        return new ResponseEntity<>(actuator, HttpStatus.CREATED);
-    }
-
     @GetMapping()
-    public ResponseEntity<Page<ActuatorDTO>> all(Pageable pageable, @RequestParam Long greenhouseId) {
+    public ResponseEntity<Page<ActuatorLiteDTO>> all(Pageable pageable, @RequestParam Long greenhouseId) {
         return ResponseEntity.ok(service.getActuators(greenhouseId, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Actuator> one(@PathVariable Long id) {
-        return actuatorRepos.findById(id).
-                map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ActuatorDTO> one(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getActuator(id));
     }
 
     @PutMapping("/{id}")

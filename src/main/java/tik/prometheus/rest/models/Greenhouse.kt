@@ -16,5 +16,13 @@ class Greenhouse(
     var width: Float = 0f,
     var length: Float = 0f,
     var cultivationArea: Float = 0f,
+    var label: String? = null
 ) {
+
+    @OneToMany(mappedBy = "greenhouse")
+    var actuatorAllocations: List<ActuatorAllocation> = emptyList()
+
+    @OneToMany(mappedBy = "greenhouse")
+    var sensorAllocations: List<SensorAllocation> = emptyList()
+
 }

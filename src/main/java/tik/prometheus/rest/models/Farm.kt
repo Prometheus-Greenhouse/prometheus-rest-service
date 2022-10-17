@@ -11,5 +11,6 @@ class Farm(
     var region: String? = null,
     var areOfFarm: Float? = null,
     var numberOfGreenhouse: String? = null,
+    var label: String? = null
 ) {
 }

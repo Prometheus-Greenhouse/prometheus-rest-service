@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tik.prometheus.rest.dtos.GreenhouseDTO;
-import tik.prometheus.rest.dtos.GreenhouseSummaryDTO;
+import tik.prometheus.rest.dtos.GreenhouseLiteDTO;
 import tik.prometheus.rest.models.Greenhouse;
 import tik.prometheus.rest.repositories.GreenhouseRepos;
 import tik.prometheus.rest.services.GreenhouseService;
@@ -28,7 +28,7 @@ public class GreenhouseController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<GreenhouseSummaryDTO>> all(@RequestParam(required = false) Long farmId, Pageable pageable) {
+    public ResponseEntity<Page<GreenhouseLiteDTO>> all(@RequestParam(required = false) Long farmId, Pageable pageable) {
         return ResponseEntity.ok(service.getGreenhouses(farmId, pageable));
     }
 
