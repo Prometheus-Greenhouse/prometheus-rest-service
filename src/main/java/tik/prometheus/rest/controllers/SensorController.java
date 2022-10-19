@@ -11,6 +11,8 @@ import tik.prometheus.rest.models.Sensor;
 import tik.prometheus.rest.repositories.SensorRepos;
 import tik.prometheus.rest.services.SensorService;
 
+import javax.transaction.Transactional;
+
 @RestControllerAdvice
 @RequestMapping("/sensors")
 public class SensorController {
@@ -31,18 +33,21 @@ public class SensorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Sensor> replaceSensor(@PathVariable Long id, @RequestBody Sensor updateSensor) {
-        return sensorRepos.findById(id).map(sensor -> {
-            sensor.setAddress(updateSensor.getAddress());
-            sensor.setType(updateSensor.getType());
-            sensor.setUnit(updateSensor.getUnit());
-            return ResponseEntity.ok(sensorRepos.save(sensor));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+    @Transactional
+    public ResponseEntity<SensorDTO> replaceSensor(@PathVariable Long id, @RequestBody SensorDTO updateSensor) {
+        return ResponseEntity.ok(sensorService.updateSensor(id, updateSensor));
+//        return sensorRepos.findById(id).map(sensor -> {
+//            sensor.setAddress(updateSensor.getAddress());
+//            sensor.setType(updateSensor.getType());
+//            sensor.setUnit(updateSensor.getUnit());
+//            return ResponseEntity.ok(sensorRepos.save(sensor));
+//        }).orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        sensorRepos.deleteById(id);
+        sensorService.deleteSensor(id);
         return ResponseEntity.noContent().build();
     }
 }

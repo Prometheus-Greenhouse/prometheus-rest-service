@@ -4,6 +4,7 @@ import javax.persistence.*
 
 @Entity
 @IdClass(SensorAllocationId::class)
+@Table(name = "sensor_allocation")
 class SensorAllocation(
     @Id
     var greenhouseId: Long? = null,
@@ -13,12 +14,11 @@ class SensorAllocation(
     var north: Float? = null,
     var west: Float? = null,
     var height: Float? = null,
-) {
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sensorId", insertable = false, updatable = false)
-    lateinit var sensor: Sensor
+    @ManyToOne
+    @JoinColumn(name = "sensorId", updatable = false, insertable = false)
+    var sensor: Sensor? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "greenhouseId", insertable = false, updatable = false)
-    lateinit var greenhouse: Greenhouse
-}
+    @ManyToOne
+    @JoinColumn(name = "greenhouseId", updatable = false, insertable = false)
+    var greenhouse: Greenhouse? = null
+)

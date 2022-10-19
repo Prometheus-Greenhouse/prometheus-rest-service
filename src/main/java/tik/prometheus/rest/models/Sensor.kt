@@ -1,7 +1,7 @@
 package tik.prometheus.rest.models
 
-import tik.prometheus.rest.constants.SensorType
 import tik.prometheus.rest.constants.EUnit
+import tik.prometheus.rest.constants.SensorType
 import tik.prometheus.rest.reflectionToString
 import javax.persistence.*
 
@@ -16,7 +16,10 @@ class Sensor(
     var type: SensorType? = SensorType.NaN,
     @Enumerated(EnumType.STRING)
     var unit: EUnit? = EUnit.NaN,
-    var label: String? = null
+    var label: String? = null,
+
+    @OneToMany(mappedBy = "sensor", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    var allocation: MutableList<SensorAllocation> = arrayListOf()
 ) {
     override fun toString(): String {
         return reflectionToString(this);

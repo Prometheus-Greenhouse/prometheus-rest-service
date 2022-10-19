@@ -10,9 +10,9 @@ class ActuatorLiteDTO(
     var type: ActuatorType = ActuatorType.NaN,
     var unit: String? = null,
     var localId: String,
-    var north: Float? = 0f,
-    var west: Float? = 0f,
-    var height: Float? = 0f,
+    var north: Float? = null,
+    var west: Float? = null,
+    var height: Float? = null,
     var label: String,
 ) {
 
@@ -26,9 +26,9 @@ class ActuatorDTO(
     var unit: String? = null,
     var localId: String,
     var greenhouse: GreenhouseLiteDTO? = null,
-    var north: Float? = 0f,
-    var west: Float? = 0f,
-    var height: Float? = 0f,
+    var north: Float? = null,
+    var west: Float? = null,
+    var height: Float? = null,
     var label: String,
 ) {
     override fun toString() = reflectionToString(this)

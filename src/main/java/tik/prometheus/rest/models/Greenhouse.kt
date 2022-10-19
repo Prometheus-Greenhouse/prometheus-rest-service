@@ -22,7 +22,8 @@ class Greenhouse(
     @OneToMany(mappedBy = "greenhouse")
     var actuatorAllocations: List<ActuatorAllocation> = emptyList()
 
-    @OneToMany(mappedBy = "greenhouse")
-    var sensorAllocations: List<SensorAllocation> = emptyList()
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name="greenhouseId")
+    var sensorAllocations: List<SensorAllocation> = mutableListOf()
 
 }
