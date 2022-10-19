@@ -24,7 +24,7 @@ public class SensorController {
     SensorService sensorService;
 
     @GetMapping()
-    public ResponseEntity<Page<SensorLiteDTO>> getSensors(Pageable pageable, @RequestParam Long greenhouseId) {
+    public ResponseEntity<Page<SensorLiteDTO>> getSensors(Pageable pageable, @RequestParam(required = false) Long greenhouseId) {
         return ResponseEntity.ok(sensorService.getSensors(pageable, greenhouseId));
     }
 

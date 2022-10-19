@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tik.prometheus.rest.models.Sensor;
 
@@ -14,7 +15,7 @@ public interface SensorRepos extends JpaRepository<Sensor, Long> {
             FROM Sensor s
             LEFT JOIN SensorAllocation sa ON s.id = sa.sensorId
             LEFT JOIN Greenhouse gh ON gh.id = sa.greenhouseId
-            WHERE gh.id = :greenhouseId
+            WHERE gh.id = :greenhouseId or :greenhouseId is null
             """)
-    Page<Sensor> findAllWithParams(Long greenhouseId, Pageable pageable);
+    Page<Sensor> findAllWithParams(@Param("greenhouseId") Long greenhouseId, Pageable pageable);
 }
