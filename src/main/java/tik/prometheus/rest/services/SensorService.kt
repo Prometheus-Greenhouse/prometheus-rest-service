@@ -7,7 +7,7 @@ import tik.prometheus.rest.dtos.SensorLiteDTO
 import tik.prometheus.rest.models.Sensor
 
 interface SensorService {
-    fun getSensors(pageable: Pageable): Page<SensorLiteDTO>
+    fun getSensors(pageable: Pageable, greenhouseId: Long): Page<SensorLiteDTO>
     fun getSensor(id: Long): SensorDTO
     fun updateSensor(sensorId: Long, sensorDto: SensorDTO): SensorDTO
 

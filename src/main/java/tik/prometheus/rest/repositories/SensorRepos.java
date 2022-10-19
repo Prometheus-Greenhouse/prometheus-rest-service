@@ -1,11 +1,20 @@
 package tik.prometheus.rest.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import tik.prometheus.rest.models.Sensor;
 
 @Repository
 public interface SensorRepos extends JpaRepository<Sensor, Long> {
-//    @Query("DELETE FROM SensorAllocation sa WHERE sa.sensorId=:sensorId")
-//    public void removeAllocation(Long sensorId);
+    @Query("""
+            SELECT s
+            FROM Sensor s
+            LEFT JOIN SensorAllocation sa ON s.id = sa.sensorId
+            LEFT JOIN Greenhouse gh ON gh.id = sa.greenhouseId
+            WHERE gh.id = :greenhouseId
+            """)
+    Page<Sensor> findAllWithParams(Long greenhouseId, Pageable pageable);
 }

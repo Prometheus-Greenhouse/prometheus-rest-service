@@ -22,8 +22,8 @@ class SensorServiceImpl @Autowired constructor(
     private val greenhouseRepos: GreenhouseRepos,
 
     ) : SensorService {
-    override fun getSensors(pageable: Pageable): Page<SensorLiteDTO> {
-        val pageEntity = repos.findAll(pageable)
+    override fun getSensors(pageable: Pageable, greenhouseId: Long): Page<SensorLiteDTO> {
+        val pageEntity = repos.findAllWithParams(greenhouseId, pageable)
         return pageEntity.map(Sensor::toSensorLiteDTO)
     }
 

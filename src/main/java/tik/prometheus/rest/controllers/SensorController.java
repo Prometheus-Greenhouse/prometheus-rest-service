@@ -1,5 +1,6 @@
 package tik.prometheus.rest.controllers;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +24,8 @@ public class SensorController {
     SensorService sensorService;
 
     @GetMapping()
-    public ResponseEntity<Page<SensorLiteDTO>> getSensors(Pageable pageable) {
-        return ResponseEntity.ok(sensorService.getSensors(pageable));
+    public ResponseEntity<Page<SensorLiteDTO>> getSensors(Pageable pageable, @RequestParam Long greenhouseId) {
+        return ResponseEntity.ok(sensorService.getSensors(pageable, greenhouseId));
     }
 
     @GetMapping("/{id}")
