@@ -13,6 +13,7 @@ class Actuator(
     var unit: String? = null,
     var localId: String? = null,
     var label: String? = null,
+    var isRunning: Boolean = false,
     @OneToOne(mappedBy = "actuator")
     var allocation: ActuatorAllocation? = null,
 )

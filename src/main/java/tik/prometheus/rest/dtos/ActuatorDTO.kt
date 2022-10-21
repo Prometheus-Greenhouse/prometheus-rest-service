@@ -30,7 +30,12 @@ class ActuatorDTO(
     var west: Float? = null,
     var height: Float? = null,
     var label: String,
+    var state: ActuatorState = ActuatorState()
 ) {
+    class ActuatorState(
+        var isRunning: Boolean = false,
+    )
+
     override fun toString() = reflectionToString(this)
 }
 
@@ -70,7 +75,10 @@ fun Actuator.toActuatorDTO(): ActuatorDTO {
         west = allocation?.west,
         height = allocation?.height,
         greenhouse = greenhouseDTO,
-        label = label ?: "%s".format(localId)
+        label = label ?: "%s".format(localId),
+        state = ActuatorDTO.ActuatorState(
+            isRunning = isRunning
+        )
     )
 }
 

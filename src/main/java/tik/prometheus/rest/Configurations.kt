@@ -2,6 +2,7 @@ package tik.prometheus.rest
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class Configurations(
@@ -10,4 +11,5 @@ class Configurations(
     @Value("\${broker.port}")
     var brokerPort: String? = null,
     var debug: Boolean? = null,
+    var mqttClientId: String = UUID.randomUUID().toString()
 )

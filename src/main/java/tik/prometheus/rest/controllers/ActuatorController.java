@@ -3,7 +3,6 @@ package tik.prometheus.rest.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tik.prometheus.rest.dtos.ActuatorDTO;
@@ -38,6 +37,12 @@ public class ActuatorController {
             actuator.setUnit(updateActuator.getUnit());
             return ResponseEntity.ok(actuatorRepos.save(actuator));
         }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateState(@PathVariable Long id, @RequestBody ActuatorDTO.ActuatorState nextState) {
+        service.patchActuator(id, nextState);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
