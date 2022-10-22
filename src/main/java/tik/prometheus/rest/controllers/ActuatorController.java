@@ -31,12 +31,8 @@ public class ActuatorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Actuator> replace(@PathVariable Long id, @RequestBody Actuator updateActuator) {
-        return actuatorRepos.findById(id).map(actuator -> {
-            actuator.setType(updateActuator.getType());
-            actuator.setUnit(updateActuator.getUnit());
-            return ResponseEntity.ok(actuatorRepos.save(actuator));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ActuatorDTO> replace(@PathVariable Long id, @RequestBody ActuatorDTO updateActuator) {
+        return ResponseEntity.ok(service.updateActuator(id, updateActuator));
     }
 
     @PatchMapping("/{id}")

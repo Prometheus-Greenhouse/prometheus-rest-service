@@ -42,19 +42,20 @@ class ActuatorDTO(
 fun ActuatorAllocation.toActuatorLiteDTO(): ActuatorLiteDTO {
     return ActuatorLiteDTO(
         id = actuatorId,
-        type = actuator.type ?: ActuatorType.NaN,
-        unit = actuator.unit,
-        localId = actuator.localId ?: "undefined",
+        type = actuator?.type ?: ActuatorType.NaN,
+        unit = actuator?.unit,
+        localId = actuator?.localId ?: "undefined",
         north = north,
         west = west,
         height = height,
-        label = "%s".format(actuator.localId)
+        label = "%s".format(actuator?.localId)
     )
 }
 
 fun Actuator.toActuatorDTO(): ActuatorDTO {
-    val greenhouse = allocation?.greenhouse
+    val allo = allocation.firstOrNull()
 
+    val greenhouse = allo?.greenhouse
     val greenhouseDTO = if (greenhouse != null) GreenhouseLiteDTO(
         id = greenhouse.id,
         farmId = greenhouse.farmId!!,
@@ -71,9 +72,9 @@ fun Actuator.toActuatorDTO(): ActuatorDTO {
         type = type ?: ActuatorType.NaN,
         unit = unit,
         localId = localId ?: "undefined",
-        north = allocation?.north,
-        west = allocation?.west,
-        height = allocation?.height,
+        north = allo?.north,
+        west = allo?.west,
+        height = allo?.height,
         greenhouse = greenhouseDTO,
         label = label ?: "%s".format(localId),
         state = ActuatorDTO.ActuatorState(
@@ -83,14 +84,15 @@ fun Actuator.toActuatorDTO(): ActuatorDTO {
 }
 
 fun Actuator.toActuatorLiteDTO(): ActuatorLiteDTO {
+    val allo = allocation.firstOrNull()
     return ActuatorLiteDTO(
         id = id,
         type = type ?: ActuatorType.NaN,
         unit = unit,
         localId = localId ?: "undefined",
-        north = allocation?.north,
-        west = allocation?.west,
-        height = allocation?.height,
+        north = allo?.north,
+        west = allo?.west,
+        height = allo?.height,
         label = label ?: "%s".format(localId)
     )
 }

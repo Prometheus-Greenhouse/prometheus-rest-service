@@ -14,6 +14,6 @@ class Actuator(
     var localId: String? = null,
     var label: String? = null,
     var isRunning: Boolean = false,
-    @OneToOne(mappedBy = "actuator")
-    var allocation: ActuatorAllocation? = null,
+    @OneToMany(mappedBy = "actuator", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    var allocation: MutableList<ActuatorAllocation> = arrayListOf()
 )

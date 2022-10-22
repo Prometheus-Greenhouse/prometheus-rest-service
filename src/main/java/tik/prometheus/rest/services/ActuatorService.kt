@@ -8,9 +8,8 @@ import tik.prometheus.rest.models.Actuator
 
 interface ActuatorService {
     fun getActuators(greenhouseId: Long, pageable: Pageable): Page<ActuatorLiteDTO>
-
     fun getActuator(id: Long): ActuatorDTO
-
+    fun updateActuator(id: Long, actuator: ActuatorDTO): ActuatorDTO
     fun patchActuator(id: Long, nextState: ActuatorDTO.ActuatorState)
 
     companion object {

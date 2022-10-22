@@ -12,13 +12,10 @@ data class ActuatorAllocation(
     var north: Float? = null,
     var west: Float? = null,
     var height: Float? = null,
-) {
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "actuatorId", insertable = false, updatable = false)
-    lateinit var actuator: Actuator
-
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "actuatorId", insertable = false, updatable = false)
+    var actuator: Actuator? = null,
+    @ManyToOne
     @JoinColumn(name = "greenhouseId", insertable = false, updatable = false)
-    lateinit var greenhouse: Greenhouse
-}
+    var greenhouse: Greenhouse? = null
+)

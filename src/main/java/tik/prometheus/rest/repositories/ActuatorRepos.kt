@@ -10,7 +10,14 @@ import tik.prometheus.rest.models.Actuator
 
 @Repository
 interface ActuatorRepos : JpaRepository<Actuator, Long> {
-    @Query("SELECT a FROM Actuator a WHERE a.allocation.greenhouseId = :greenhouseId")
-    fun findAllWithParams(@Param("greenhouseId") greenhouseId: Long, pageable: Pageable): Page<Actuator>
+    @Query(
+        """
+        SELECT a 
+        FROM Actuator a
+        LEFT JOIN ActuatorAllocation aa ON a.id = aa.actuatorId
+        LEFT JOIN Greenhouse gh ON gh.id = aa.greenhouseId
+        WHERE gh.id = :greenhouseId or :greenhouseId is null"""
+    )
+    fun findAllWithParams(@Param("greenhouseId") greenhouseId: Long?=null, pageable: Pageable): Page<Actuator>
 
 }
