@@ -1,8 +1,26 @@
 package tik.prometheus.rest.repositories;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import tik.prometheus.rest.models.SensorRecord;
 import tik.prometheus.rest.models.SensorRecordId;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public interface SensorRecordRepos extends JpaRepository<SensorRecord, SensorRecordId> {
+    @Query(value = """
+                SELECT r
+                FROM SensorRecord r
+                JOIN Sensor s ON s.id = r.sensorId
+                WHERE s.id = :sensorId
+                AND r.date >= :from
+                AND r.date <= :to
+            """)
+    List<SensorRecord> findSensorRecords(
+            @Param("sensorId") Long sensorId,
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to);
 }

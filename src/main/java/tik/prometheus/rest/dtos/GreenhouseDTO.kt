@@ -1,11 +1,13 @@
 package tik.prometheus.rest.dtos
 
 import tik.prometheus.rest.models.Greenhouse
+import tik.prometheus.rest.services.GreenhouseService
 
 class GreenhouseLiteDTO(
     var id: Long? = null,
     var farmId: Long? = null,
     var type: String,
+    var label: String?,
     var area: Float,
     var height: Float,
     var width: Float,
@@ -36,5 +38,6 @@ fun Greenhouse.toGreenhouseSummaryDTO(): GreenhouseLiteDTO {
         width = width,
         length = length,
         cultivationArea = cultivationArea,
+        label = label ?: GreenhouseService.greenhouseLabel(this)
     )
 }

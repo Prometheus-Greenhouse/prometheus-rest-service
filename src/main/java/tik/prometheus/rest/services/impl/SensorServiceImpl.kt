@@ -13,15 +13,20 @@ import tik.prometheus.rest.dtos.toSensorLiteDTO
 import tik.prometheus.rest.models.Sensor
 import tik.prometheus.rest.models.SensorAllocation
 import tik.prometheus.rest.repositories.GreenhouseRepos
+import tik.prometheus.rest.repositories.SensorRecordRepos
 import tik.prometheus.rest.repositories.SensorRepos
 import tik.prometheus.rest.services.SensorService
+import java.time.LocalDate
+import java.time.LocalDateTime
+import javax.persistence.EntityManager
 
 @Service
 class SensorServiceImpl @Autowired constructor(
     private val repos: SensorRepos,
+    private val recordRepos: SensorRecordRepos,
     private val greenhouseRepos: GreenhouseRepos,
-
-    ) : SensorService {
+    private val entityManager: EntityManager
+) : SensorService {
     override fun getSensors(pageable: Pageable, greenhouseId: Long?): Page<SensorLiteDTO> {
         val pageEntity = repos.findAllWithParams(greenhouseId, pageable)
         return pageEntity.map(Sensor::toSensorLiteDTO)
@@ -63,6 +68,43 @@ class SensorServiceImpl @Autowired constructor(
 
     override fun deleteSensor(sensorId: Long) {
         repos.deleteById(sensorId)
+    }
+
+
+    override fun getSensorRecords(id: Long, from: LocalDateTime, to: LocalDateTime): List<Float> {
+        val content= recordRepos.findSensorRecords(id, from, to)
+        val map: MutableMap<LocalDate, ArrayList<Float>> = mutableMapOf()
+        var dateCursor = from.toLocalDate()
+        val end = to.toLocalDate()
+        while (dateCursor < end) {
+            map.put(
+                LocalDate.of(dateCursor.year, dateCursor.month, dateCursor.dayOfMonth),
+                ArrayList()
+            )
+            dateCursor = dateCursor.plusDays(1)
+            println(dateCursor)
+        }
+        for (record in content) {
+            try {
+                val value = record.sensorData.toString().toFloat()
+                val recordDate = record.date!!.toLocalDate()
+
+                if (map[recordDate] == null) {
+                    map[recordDate] = arrayListOf(value)
+                } else {
+                    map[recordDate]!!.add(value)
+                }
+            } catch (e: Exception) {
+                continue
+            }
+        }
+        return map.values.stream().map {
+            var rs = it.firstOrNull()
+            if (rs == null) {
+                rs = 0f
+            }
+            rs
+        }.toList()
     }
 
 }

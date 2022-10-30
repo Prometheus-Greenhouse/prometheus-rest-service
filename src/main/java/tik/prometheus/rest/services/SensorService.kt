@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable
 import tik.prometheus.rest.dtos.SensorDTO
 import tik.prometheus.rest.dtos.SensorLiteDTO
 import tik.prometheus.rest.models.Sensor
+import java.time.LocalDateTime
 
 interface SensorService {
     fun getSensors(pageable: Pageable, greenhouseId: Long?): Page<SensorLiteDTO>
@@ -12,6 +13,7 @@ interface SensorService {
     fun updateSensor(sensorId: Long, sensorDto: SensorDTO): SensorDTO
 
     fun deleteSensor(sensorId: Long)
+    fun getSensorRecords(id: Long, from: LocalDateTime, to: LocalDateTime): Any
 
     companion object {
         fun sensorTopic(sensor: Sensor): String {

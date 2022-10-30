@@ -4,6 +4,7 @@ import tik.prometheus.rest.constants.ActuatorType
 import tik.prometheus.rest.models.Actuator
 import tik.prometheus.rest.models.ActuatorAllocation
 import tik.prometheus.rest.reflectionToString
+import tik.prometheus.rest.services.GreenhouseService
 
 class ActuatorLiteDTO(
     var id: Long? = null,
@@ -65,6 +66,7 @@ fun Actuator.toActuatorDTO(): ActuatorDTO {
         width = greenhouse.width,
         length = greenhouse.length,
         cultivationArea = greenhouse.cultivationArea,
+        label = GreenhouseService.greenhouseLabel(greenhouse)
     ) else null;
 
     return ActuatorDTO(

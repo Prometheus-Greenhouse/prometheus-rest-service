@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tik.prometheus.rest.models.Sensor;
+import tik.prometheus.rest.models.SensorRecord;
+
+import java.util.List;
 
 @Repository
 public interface SensorRepos extends JpaRepository<Sensor, Long> {
@@ -18,4 +21,6 @@ public interface SensorRepos extends JpaRepository<Sensor, Long> {
             WHERE gh.id = :greenhouseId or :greenhouseId is null
             """)
     Page<Sensor> findAllWithParams(@Param("greenhouseId") Long greenhouseId, Pageable pageable);
+
+
 }
