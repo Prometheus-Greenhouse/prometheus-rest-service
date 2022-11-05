@@ -15,7 +15,7 @@ public interface SensorRecordRepos extends JpaRepository<SensorRecord, SensorRec
                 SELECT r
                 FROM SensorRecord r
                 JOIN Sensor s ON s.id = r.sensorId
-                WHERE s.id = :sensorId
+                WHERE r.sensorId = :sensorId
                 AND r.date >= :from
                 AND r.date <= :to
             """)

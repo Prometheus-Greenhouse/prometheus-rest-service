@@ -72,7 +72,7 @@ class SensorServiceImpl @Autowired constructor(
 
 
     override fun getSensorRecords(id: Long, from: LocalDateTime, to: LocalDateTime): List<Float> {
-        val content= recordRepos.findSensorRecords(id, from, to)
+        val content = recordRepos.findSensorRecords(id, from, to)
         val map: MutableMap<LocalDate, ArrayList<Float>> = mutableMapOf()
         var dateCursor = from.toLocalDate()
         val end = to.toLocalDate()
@@ -82,13 +82,11 @@ class SensorServiceImpl @Autowired constructor(
                 ArrayList()
             )
             dateCursor = dateCursor.plusDays(1)
-            println(dateCursor)
         }
         for (record in content) {
             try {
                 val value = record.sensorData.toString().toFloat()
                 val recordDate = record.date!!.toLocalDate()
-
                 if (map[recordDate] == null) {
                     map[recordDate] = arrayListOf(value)
                 } else {

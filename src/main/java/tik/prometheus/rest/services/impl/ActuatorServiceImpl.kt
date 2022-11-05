@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.support.KafkaHeaders
+import org.springframework.messaging.handler.annotation.Header
+import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import tik.prometheus.rest.Configurations
@@ -19,6 +23,7 @@ import tik.prometheus.rest.models.ActuatorAllocation
 import tik.prometheus.rest.repositories.ActuatorRepos
 import tik.prometheus.rest.repositories.GreenhouseRepos
 import tik.prometheus.rest.services.ActuatorService
+
 
 @Service
 class ActuatorServiceImpl @Autowired constructor(
@@ -88,5 +93,16 @@ class ActuatorServiceImpl @Autowired constructor(
 
     }
 
-
+    @KafkaListener(topics = ["ora-CUSTOMERS-jdbc-02"])
+    fun listenGroupFoo(
+        @Payload message: Any,
+        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) key: Int,
+//                       @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+//                       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+        @Header(KafkaHeaders.RECEIVED_TIMESTAMP) ts: Long
+    ) {
+        println(key)
+        println(ts)
+        println(message.toString())
+    }
 }
