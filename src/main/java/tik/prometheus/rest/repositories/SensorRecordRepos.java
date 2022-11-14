@@ -9,8 +9,9 @@ import tik.prometheus.rest.models.SensorRecordId;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
-public interface SensorRecordRepos extends JpaRepository<SensorRecord, SensorRecordId> {
+public interface SensorRecordRepos extends JpaRepository<SensorRecord, UUID> {
     @Query(value = """
                 SELECT r
                 FROM SensorRecord r

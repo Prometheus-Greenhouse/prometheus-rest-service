@@ -3,11 +3,12 @@ package tik.prometheus.rest.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tik.prometheus.rest.dtos.ActuatorDTO;
 import tik.prometheus.rest.dtos.ActuatorLiteDTO;
-import tik.prometheus.rest.models.Actuator;
+import tik.prometheus.rest.dtos.ActuatorTaskDTO;
 import tik.prometheus.rest.repositories.ActuatorRepos;
 import tik.prometheus.rest.services.ActuatorService;
 
@@ -45,5 +46,16 @@ public class ActuatorController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         actuatorRepos.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/tasks")
+    public ResponseEntity<ActuatorTaskDTO> postTask(@PathVariable Long id, @RequestBody ActuatorTaskDTO body) {
+        service.createTask(id, body);
+        return new ResponseEntity<>(body, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}/taks")
+    public ResponseEntity<ActuatorTaskDTO> getTask(@PathVariable Long id){
+        return ResponseEntity.ok(service.getTask(id));
     }
 }

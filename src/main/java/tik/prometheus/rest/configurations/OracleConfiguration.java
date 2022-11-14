@@ -1,4 +1,4 @@
-package tik.prometheus.rest;
+package tik.prometheus.rest.configurations;
 
 import oracle.jdbc.pool.OracleDataSource;
 import org.springframework.beans.factory.annotation.Value;

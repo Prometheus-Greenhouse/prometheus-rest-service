@@ -1,27 +1,21 @@
 package tik.prometheus.rest.services.impl
 
 import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
-import org.springframework.kafka.annotation.KafkaListener
-import org.springframework.kafka.support.KafkaHeaders
-import org.springframework.messaging.handler.annotation.Header
-import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
-import tik.prometheus.rest.Configurations
-import tik.prometheus.rest.dtos.ActuatorDTO
-import tik.prometheus.rest.dtos.ActuatorLiteDTO
-import tik.prometheus.rest.dtos.toActuatorDTO
-import tik.prometheus.rest.dtos.toActuatorLiteDTO
+import tik.prometheus.rest.configurations.Configurations
+import tik.prometheus.rest.dtos.*
 import tik.prometheus.rest.models.Actuator
 import tik.prometheus.rest.models.ActuatorAllocation
+import tik.prometheus.rest.models.ActuatorTask
 import tik.prometheus.rest.repositories.ActuatorRepos
 import tik.prometheus.rest.repositories.GreenhouseRepos
+import tik.prometheus.rest.repositories.SensorRepos
 import tik.prometheus.rest.services.ActuatorService
 
 
@@ -29,7 +23,8 @@ import tik.prometheus.rest.services.ActuatorService
 class ActuatorServiceImpl @Autowired constructor(
     private val actuatorRepos: ActuatorRepos,
     private val configurations: Configurations,
-    private val greenhouseRepos: GreenhouseRepos
+    private val greenhouseRepos: GreenhouseRepos,
+    private val sensorRepos: SensorRepos
 ) : ActuatorService {
 
     override fun getActuators(greenhouseId: Long, pageable: Pageable): Page<ActuatorLiteDTO> {
@@ -73,14 +68,12 @@ class ActuatorServiceImpl @Autowired constructor(
         actuator.isRunning = nextState.isRunning
         actuatorRepos.saveAndFlush(actuator);
         val url = "tcp://%s:%s".format(configurations.brokerHost, configurations.brokerPort)
-        println(url)
         val client = MqttClient(url, configurations.mqttClientId)
-        val options = MqttConnectOptions()
-        options.isAutomaticReconnect = true
-        options.isCleanSession = true
-        options.connectionTimeout = 10
+//        val options = MqttConnectOptions()
+//        options.isAutomaticReconnect = true
+//        options.isCleanSession = true
+//        options.connectionTimeout = 10
         val topic = ActuatorService.actuatorTopic(actuator)
-        println(topic)
         val msg = MqttMessage(
             (if (actuator.isRunning) "1" else "0").toByteArray()
         )
@@ -93,16 +86,42 @@ class ActuatorServiceImpl @Autowired constructor(
 
     }
 
-    @KafkaListener(topics = ["ora-CUSTOMERS-jdbc-02"])
-    fun listenGroupFoo(
-        @Payload message: Any,
-        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) key: Int,
-//                       @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
-//                       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-        @Header(KafkaHeaders.RECEIVED_TIMESTAMP) ts: Long
-    ) {
-        println(key)
-        println(ts)
-        println(message.toString())
+    override fun createTask(id: Long, task: ActuatorTaskDTO): ActuatorTaskDTO {
+        actuatorRepos.findById(id).ifPresentOrElse({
+            sensorRepos.findById(task.sensorId).orElseThrow { throw ResponseStatusException(HttpStatus.NOT_FOUND, "Sensor ${task.sensorId} not found") }
+            it.task.clear()
+            it.task.add(
+                ActuatorTask(
+                    id,
+                    task.sensorId,
+                    startValue = task.startValue,
+                    limitValue = task.limitValue
+                )
+            )
+            actuatorRepos.save(it)
+        }, {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Actuator $id not found")
+        })
+        return task
     }
+
+    override fun getTask(id: Long): ActuatorTaskDTO {
+        val task = actuatorRepos.findById(id).orElseThrow { throw ResponseStatusException(HttpStatus.NOT_FOUND) }.task.firstOrNull() ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        return task.toDTO()
+    }
+
+//    @KafkaListener(topics = ["ora-CUSTOMERS-sensor-data"])
+//    fun listenGroupFoo(
+//        @Payload message: JsonObject,
+//        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) key: Int,
+////                       @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+////                       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+//        @Header(KafkaHeaders.RECEIVED_TIMESTAMP) ts: Long
+//    ) {
+//        println(key)
+//        println(ts)
+//        println(message.toString())
+//    }
+
+
 }
