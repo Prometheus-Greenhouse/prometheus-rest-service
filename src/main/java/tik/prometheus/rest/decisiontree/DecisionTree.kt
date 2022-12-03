@@ -1,5 +1,7 @@
-package tik.prometheus.rest
+package tik.prometheus.rest.decisiontree
 
+import tik.prometheus.rest.constants.DayCycle
+import tik.prometheus.rest.models.Sensor
 import tik.prometheus.rest.models.SensorRecord
 
 class DecisionTree {
@@ -9,7 +11,7 @@ class DecisionTree {
             return i.sumOf { -it / p * (Math.log(it / p) / Math.log(2.0)) }
         }
 
-        fun <T> simplize(sensorRecords: MutableList<SensorRecord>, get: (Double) -> T): List<SimplziedRecord<T>> {
+        fun <T> simplize(sensorRecords: MutableList<SensorRecord>, get: (Double) -> T): List<SimplizedRecord<T>> {
             sensorRecords.removeIf {
                 try {
                     it.sensorData!!.toFloat()
@@ -22,7 +24,7 @@ class DecisionTree {
             }
             return sensorRecords.map {
                 val value = it.sensorData!!.toDouble()
-                SimplziedRecord(
+                SimplizedRecord(
                     value = value,
                     group = get(value)
                 )
@@ -33,45 +35,7 @@ class DecisionTree {
 }
 
 
-enum class TemperatureGroup(val start: Double, val end: Double) {
-    HOT(34.0, Double.MAX_VALUE),
-    MID(20.0, 33.0),
-    COOL(Double.MIN_VALUE, 19.0);
-
-    companion object {
-        fun getGroup(value: Double): TemperatureGroup {
-            TemperatureGroup.values().forEach {
-                if (it.start <= value && value <= it.end) {
-                    return it;
-                }
-            }
-            throw IllegalCallerException("value invalid")
-        }
-    }
-}
-
-enum class DayCycle(val start: Double, val end: Double) {
-    DAY(6.0, 18.0),
-    NIGHT(17.0, 5.0);
-
-    companion object {
-        fun getGroup(value: Double): DayCycle {
-            DayCycle.values().forEach {
-                if (it.start <= value && value <= it.end) {
-                    return it
-                }
-                if (it.start >= it.end
-                    && ((it.start <= value && value < 24) || (0 <= value && value <= it.end))
-                ) {
-                    return it
-                }
-            }
-            throw IllegalCallerException("value invalid %s".format(value))
-        }
-    }
-}
-
-class SimplziedRecord<T>(
+class SimplizedRecord<T>(
     var value: Double,
     var group: T,
 )
@@ -87,7 +51,7 @@ fun main(args: Array<String>) {
             .map { SensorRecord(sensorData = it.toString()) }
             .toMutableList()
 
-    val rs = DecisionTree.simplize(dateData, DayCycle::getGroup)
+    val rs = DecisionTree.simplize(dateData, DayCycle.Companion::getGroup)
 
     val grouped = rs.groupBy { it.group }
     println(grouped)

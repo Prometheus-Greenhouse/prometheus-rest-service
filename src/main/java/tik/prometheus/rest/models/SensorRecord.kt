@@ -1,7 +1,6 @@
 package tik.prometheus.rest.models
 
 import java.time.LocalDateTime
-import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -14,8 +13,7 @@ class SensorRecord(
     var id: Long? = null,
     var greenhouseId: Long? = null,
     var sensorId: Long? = null,
-    @Column(name = """"date"""")
-    var date: LocalDateTime? = null,
+    var createdAt: LocalDateTime? = null,
     var weather: String? = null,
     var numberOfWeek: String? = null,
     var sensorData: String? = null,

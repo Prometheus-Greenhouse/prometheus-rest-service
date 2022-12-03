@@ -17,8 +17,8 @@ public interface SensorRecordRepos extends JpaRepository<SensorRecord, UUID> {
                 FROM SensorRecord r
                 JOIN Sensor s ON s.id = r.sensorId
                 WHERE r.sensorId = :sensorId
-                AND r.date >= :from
-                AND r.date <= :to
+                AND r.createdAt >= :from
+                AND r.createdAt <= :to
             """)
     List<SensorRecord> findSensorRecords(
             @Param("sensorId") Long sensorId,

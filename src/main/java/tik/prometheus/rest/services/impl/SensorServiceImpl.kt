@@ -86,7 +86,7 @@ class SensorServiceImpl @Autowired constructor(
         for (record in content) {
             try {
                 val value = record.sensorData.toString().toFloat()
-                val recordDate = record.date!!.toLocalDate()
+                val recordDate = record.createdAt!!.toLocalDate()
                 if (map[recordDate] == null) {
                     map[recordDate] = arrayListOf(value)
                 } else {
