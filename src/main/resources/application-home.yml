@@ -8,7 +8,7 @@ spring:
           uri: file://home/long/Desktop/repositories/config-repos
           default-label: master
   datasource:
-    url: jdbc:oracle:thin:@//192.168.1.3:1521/oracle
+    url: jdbc:oracle:thin:@//10.40.3.1:1521/oracle
     username: prometheus
     password: Ld201199
     driver-class-name: oracle.jdbc.OracleDriver
