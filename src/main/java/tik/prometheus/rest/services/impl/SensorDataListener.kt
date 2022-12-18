@@ -26,10 +26,16 @@ class SensorDataListener @Autowired constructor(
 
     @KafkaListener(
         id = "class-level",
-        topicPartitions = [TopicPartition(
-            topic = "ora-SENSOR_RECORD-jdbc-00",
-            partitionOffsets = [PartitionOffset(partition = "0", initialOffset = "-1")]
-        )]
+        topicPartitions = [
+            TopicPartition(
+                topic = "ora-SENSOR_RECORD-jdbc-01",
+                partitionOffsets = [PartitionOffset(partition = "0", initialOffset = "-1")]
+            ),
+            TopicPartition(
+                topic = "ora-SENSOR_RECORD-jdbc-02",
+                partitionOffsets = [PartitionOffset(partition = "0", initialOffset = "-1")]
+            )
+        ]
     )
     fun listenDTO(
         @Header(name = KafkaHeaders.RECEIVED_MESSAGE_KEY, required = false) key: String,

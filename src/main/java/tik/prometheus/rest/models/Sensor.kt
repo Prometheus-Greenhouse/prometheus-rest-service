@@ -23,8 +23,5 @@ class Sensor(
     @OneToMany(mappedBy = "sensor", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     var task: MutableList<ActuatorTask> = arrayListOf()
 ) {
-    override fun toString(): String {
-        return reflectionToString(this);
-    }
 
 }

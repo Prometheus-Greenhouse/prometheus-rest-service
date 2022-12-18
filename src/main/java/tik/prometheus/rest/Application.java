@@ -16,8 +16,6 @@ import java.util.List;
 @SpringBootApplication
 @Controller
 @EnableConfigServer
-//@EnableFeignClients
-//@EnableEurekaClient
 @EnableKafka
 @ConfigurationPropertiesScan
 public class Application {

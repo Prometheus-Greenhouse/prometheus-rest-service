@@ -31,7 +31,7 @@ class GreenhouseDTO(
 fun Greenhouse.toGreenhouseSummaryDTO(): GreenhouseLiteDTO {
     return GreenhouseLiteDTO(
         id = id,
-        farmId = farmId!!,
+        farmId = farmId,
         type = type,
         area = area,
         height = height,

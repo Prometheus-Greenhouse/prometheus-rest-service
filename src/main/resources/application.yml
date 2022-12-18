@@ -18,7 +18,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.Oracle12cDialec
+        dialect: org.hibernate.dialect.Oracle12cDialect
 #  kafka:
 #    properties:
 #      schema.registry.url: http://127.0.0.1:8081
