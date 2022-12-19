@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 import tik.prometheus.rest.MqttClientFactory
+import tik.prometheus.rest.constants.ActuatorTaskType
 import tik.prometheus.rest.models.ActuatorTask
 import tik.prometheus.rest.repositories.ActuatorRepos
 import tik.prometheus.rest.repositories.SensorRecordRepos
@@ -55,6 +56,14 @@ class SensorDataListener @Autowired constructor(
     }
 
     private fun resolveTask(task: ActuatorTask, sensorData: Float) {
+        when (task.taskType) {
+            ActuatorTaskType.DECISION -> handleDecisionTreeTask(task, sensorData)
+            ActuatorTaskType.RANGE -> handleRangeTask(task, sensorData)
+            else -> {}
+        }
+    }
+
+    private fun handleRangeTask(task: ActuatorTask, sensorData: Float) {
         val isOuterOfRange = isOuterOfRangeSensorValue(task, sensorData)
         var msg: MqttMessage? = null
         println("${!isOuterOfRange} ${task.actuator?.isRunning != false}")
@@ -77,6 +86,11 @@ class SensorDataListener @Autowired constructor(
             client.disconnect()
             client.close()
         }
+
+    }
+
+    private fun handleDecisionTreeTask(task: ActuatorTask, sensorData: Float) {
+
     }
 
     private fun isOuterOfRangeSensorValue(actuatorTask: ActuatorTask, sensorData: Float): Boolean {

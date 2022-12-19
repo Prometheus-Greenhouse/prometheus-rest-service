@@ -1,5 +1,6 @@
 package tik.prometheus.rest.models
 
+import tik.prometheus.rest.constants.ActuatorTaskType
 import java.io.Serializable
 import javax.persistence.*
 
@@ -11,6 +12,8 @@ class ActuatorTask(
     var actuatorId: Long? = null,
     @Id
     var sensorId: Long? = null,
+    @Enumerated(EnumType.STRING)
+    var taskType: ActuatorTaskType? = null,
     var startValue: Float? = null,
     var limitValue: Float? = null,
 

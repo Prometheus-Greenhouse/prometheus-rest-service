@@ -16,7 +16,7 @@ import java.util.List;
 @SpringBootApplication
 @Controller
 @EnableConfigServer
-@EnableKafka
+//@EnableKafka
 @ConfigurationPropertiesScan
 public class Application {
 

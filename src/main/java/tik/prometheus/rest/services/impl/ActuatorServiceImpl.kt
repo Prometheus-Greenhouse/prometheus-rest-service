@@ -69,10 +69,6 @@ class ActuatorServiceImpl @Autowired constructor(
         actuatorRepos.saveAndFlush(actuator);
         val url = "tcp://%s:%s".format(configurations.brokerHost, configurations.brokerPort)
         val client = MqttClient(url, configurations.mqttClientId)
-//        val options = MqttConnectOptions()
-//        options.isAutomaticReconnect = true
-//        options.isCleanSession = true
-//        options.connectionTimeout = 10
         val topic = ActuatorService.actuatorTopic(actuator)
         val msg = MqttMessage(
             (if (actuator.isRunning) "1" else "0").toByteArray()
@@ -94,8 +90,9 @@ class ActuatorServiceImpl @Autowired constructor(
                 ActuatorTask(
                     id,
                     task.sensorId,
-                    startValue = task.startValue,
-                    limitValue = task.limitValue
+                    task.taskType,
+                    task.startValue,
+                    task.limitValue
                 )
             )
             actuatorRepos.save(it)
@@ -109,19 +106,5 @@ class ActuatorServiceImpl @Autowired constructor(
         val task = actuatorRepos.findById(id).orElseThrow { throw ResponseStatusException(HttpStatus.NOT_FOUND) }.task.firstOrNull() ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
         return task.toDTO()
     }
-
-//    @KafkaListener(topics = ["ora-CUSTOMERS-sensor-data"])
-//    fun listenGroupFoo(
-//        @Payload message: JsonObject,
-//        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) key: Int,
-////                       @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
-////                       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-//        @Header(KafkaHeaders.RECEIVED_TIMESTAMP) ts: Long
-//    ) {
-//        println(key)
-//        println(ts)
-//        println(message.toString())
-//    }
-
 
 }
