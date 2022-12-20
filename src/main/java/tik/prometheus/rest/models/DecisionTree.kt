@@ -2,10 +2,10 @@ package tik.prometheus.rest.models
 
 import com.google.gson.Gson
 import java.sql.Clob
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Table(name = "DECISION_TREE")
 class DecisionTree(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,6 +13,7 @@ class DecisionTree(
     val actuatorId: Long? = null,
     @Lob
     val tree: Clob? = null,
+    val updatedAt: LocalDateTime? = null
 ) {
 
     fun <T> getContent(type: Class<T>): T? {

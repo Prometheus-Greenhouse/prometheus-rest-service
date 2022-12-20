@@ -86,7 +86,13 @@ class OracleStartup @Autowired constructor(
         actuator.forEach {
             var cursor = LocalDateTime.now() - Duration.ofHours(168)
             while (cursor < LocalDateTime.now()) {
-                createIrrigatorRecord(it, cursor)
+                val rand = Random(System.currentTimeMillis())
+                val randValue = rand.nextInt(0, 10)
+                val mod = randValue % 2
+                println("%s %s".format(randValue, mod))
+                if (mod == 1) {
+                    createIrrigatorRecord(it, cursor)
+                }
                 cursor += Duration.ofHours(1)
             }
         }
@@ -180,15 +186,14 @@ class OracleStartup @Autowired constructor(
     }
 
     private fun createIrrigatorRecord(actuator: Actuator, date: LocalDateTime) {
-        if (Random(actuator.id!!).nextInt(0, 10) % 2 == 0) {
-            irrigatorRecordRepos.save(
-                NutrientIrrigatorRecord(
-                    actuatorId = actuator.id,
-                    runDate = date
-                )
+        println("insert --->")
+        irrigatorRecordRepos.save(
+            NutrientIrrigatorRecord(
+                actuatorId = actuator.id,
+                runDate = date
             )
-        }
-    }
+        )
+}
 
 
 }

@@ -1,9 +1,12 @@
 package tik.prometheus.rest.services.impl
 
+import com.google.gson.JsonObject
 import org.apache.avro.generic.GenericData
 import org.apache.avro.util.Utf8
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.PartitionOffset
 import org.springframework.kafka.annotation.TopicPartition
@@ -15,6 +18,7 @@ import tik.prometheus.rest.MqttClientFactory
 import tik.prometheus.rest.constants.ActuatorTaskType
 import tik.prometheus.rest.models.ActuatorTask
 import tik.prometheus.rest.repositories.ActuatorRepos
+import tik.prometheus.rest.repositories.DecisionTreeRepos
 import tik.prometheus.rest.repositories.SensorRecordRepos
 import tik.prometheus.rest.services.ActuatorService
 
@@ -22,7 +26,8 @@ import tik.prometheus.rest.services.ActuatorService
 class SensorDataListener @Autowired constructor(
     val sensorRecordRepos: SensorRecordRepos,
     val actuatorRepos: ActuatorRepos,
-    val mqttClientFactory: MqttClientFactory
+    val mqttClientFactory: MqttClientFactory,
+    val decisionTreeRepos: DecisionTreeRepos
 ) {
 
     @KafkaListener(
@@ -90,7 +95,12 @@ class SensorDataListener @Autowired constructor(
     }
 
     private fun handleDecisionTreeTask(task: ActuatorTask, sensorData: Float) {
+        val decisionTrees =  decisionTreeRepos.findAll(Pageable.ofSize(1))
+        if(decisionTrees.isEmpty){
+            val dTree= decisionTrees.content[0]
+            val d = dTree.getContent(JsonObject::class.java)
 
+        }
     }
 
     private fun isOuterOfRangeSensorValue(actuatorTask: ActuatorTask, sensorData: Float): Boolean {
