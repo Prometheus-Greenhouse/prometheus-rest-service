@@ -6,11 +6,9 @@ import javax.persistence.*
 
 
 @Entity
-@IdClass(ActuatorTask.ActuatorTaskId::class)
 class ActuatorTask(
-    @Id
     var actuatorId: Long? = null,
-    @Id
+    @Column(nullable = true)
     var sensorId: Long? = null,
     @Enumerated(EnumType.STRING)
     var taskType: ActuatorTaskType? = null,
@@ -24,6 +22,9 @@ class ActuatorTask(
     @JoinColumn(name = "sensorId", insertable = false, updatable = false)
     var sensor: Sensor? = null
 ) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null;
     class ActuatorTaskId(
         @Id
         var actuatorId: Long? = null,
