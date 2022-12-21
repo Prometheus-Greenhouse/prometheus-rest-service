@@ -5,8 +5,7 @@ import org.apache.avro.generic.GenericData
 import org.apache.avro.util.Utf8
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.PartitionOffset
 import org.springframework.kafka.annotation.TopicPartition
@@ -14,6 +13,7 @@ import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestTemplate
 import tik.prometheus.rest.MqttClientFactory
 import tik.prometheus.rest.constants.ActuatorTaskType
 import tik.prometheus.rest.models.ActuatorTask
@@ -27,7 +27,9 @@ class SensorDataListener @Autowired constructor(
     val sensorRecordRepos: SensorRecordRepos,
     val actuatorRepos: ActuatorRepos,
     val mqttClientFactory: MqttClientFactory,
-    val decisionTreeRepos: DecisionTreeRepos
+    val decisionTreeRepos: DecisionTreeRepos,
+    @Value("\${decisiontree.url}")
+    val decisionTreeUrl: String
 ) {
 
     @KafkaListener(
@@ -79,10 +81,29 @@ class SensorDataListener @Autowired constructor(
             msg = MqttMessage("0".toByteArray())
             task.actuator?.isRunning = false
         }
+        sensMqttMessage(task, msg)
+    }
+
+    private fun handleDecisionTreeTask(task: ActuatorTask, sensorData: Float) {
+        val restTemplate = RestTemplate()
+        val res = restTemplate.getForEntity(decisionTreeUrl + "/decision", JsonObject::class.java, mapOf("sensor_data" to sensorData))
+        var run = res.body!!["data"].asString == "N"
+        var msg: MqttMessage? = null
+        if (run && task.actuator?.isRunning != true) {
+            msg = MqttMessage("1".toByteArray())
+            task.actuator?.isRunning = true
+        } else if (!run && task.actuator?.isRunning != false) {
+            msg = MqttMessage("0".toByteArray())
+            task.actuator?.isRunning = false
+        }
+        sensMqttMessage(task, msg)
+    }
+
+    private fun sensMqttMessage(task: ActuatorTask, msg: MqttMessage?) {
         if (msg != null) {
             actuatorRepos.saveAndFlush(task.actuator!!)
-            println("pub actuator $msg")
             val topic = ActuatorService.actuatorTopic(task.actuator!!)
+            println("pub actuator $topic $msg")
             val client = mqttClientFactory.create()
             msg.qos = 1
             msg.isRetained = true
@@ -90,16 +111,6 @@ class SensorDataListener @Autowired constructor(
             client.publish(topic, msg)
             client.disconnect()
             client.close()
-        }
-
-    }
-
-    private fun handleDecisionTreeTask(task: ActuatorTask, sensorData: Float) {
-        val decisionTrees =  decisionTreeRepos.findAll(Pageable.ofSize(1))
-        if(decisionTrees.isEmpty){
-            val dTree= decisionTrees.content[0]
-            val d = dTree.getContent(JsonObject::class.java)
-
         }
     }
 

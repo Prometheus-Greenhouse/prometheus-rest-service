@@ -1,7 +1,10 @@
 package tik.prometheus.rest;
 
+import avro.shaded.com.google.common.base.CharMatcher;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;

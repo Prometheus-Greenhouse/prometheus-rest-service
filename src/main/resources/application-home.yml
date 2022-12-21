@@ -45,3 +45,5 @@ broker:
   port: 1883
 server:
   port: 8000
+decisiontree:
+  url: localhost:8001
