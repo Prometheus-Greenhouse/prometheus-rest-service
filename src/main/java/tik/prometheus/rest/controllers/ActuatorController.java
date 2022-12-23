@@ -54,7 +54,7 @@ public class ActuatorController {
         return new ResponseEntity<>(body, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}/taks")
+    @GetMapping("/{id}/tasks")
     public ResponseEntity<ActuatorTaskDTO> getTask(@PathVariable Long id){
         return ResponseEntity.ok(service.getTask(id));
     }

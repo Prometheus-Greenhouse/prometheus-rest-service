@@ -13,7 +13,7 @@ class DecisionTree(
     val actuatorId: Long? = null,
     @Lob
     val tree: Clob? = null,
-    val updatedAt: LocalDateTime? = null
+    val createdAt: LocalDateTime? = null
 ) {
 
     fun <T> getContent(type: Class<T>): T? {

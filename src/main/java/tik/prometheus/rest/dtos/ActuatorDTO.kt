@@ -31,7 +31,7 @@ class ActuatorDTO(
     var west: Float? = null,
     var height: Float? = null,
     var label: String,
-    var state: ActuatorState = ActuatorState()
+    var state: ActuatorState = ActuatorState(),
 ) {
     class ActuatorState(
         var isRunning: Boolean = false,
