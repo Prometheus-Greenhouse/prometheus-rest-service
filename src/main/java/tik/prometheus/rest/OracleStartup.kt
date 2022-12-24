@@ -36,9 +36,9 @@ class OracleStartup @Autowired constructor(
             createSampleData()
         }
 
-        mockData()
+//        mockData()
 
-        createMetadata()
+//        createMetadata()
     }
 
     private fun createSampleData() {

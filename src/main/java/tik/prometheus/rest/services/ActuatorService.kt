@@ -16,6 +16,8 @@ interface ActuatorService {
     fun createTask(id: Long, task: ActuatorTaskDTO): ActuatorTaskDTO
     fun getTask(id: Long): ActuatorTaskDTO
 
+    fun deleteTask(id: Long)
+
     companion object {
         fun actuatorTopic(actuator: Actuator): String {
             return "actuator/%s".format(actuator.id)

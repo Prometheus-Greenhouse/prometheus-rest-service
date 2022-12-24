@@ -55,7 +55,13 @@ public class ActuatorController {
     }
 
     @GetMapping("/{id}/tasks")
-    public ResponseEntity<ActuatorTaskDTO> getTask(@PathVariable Long id){
+    public ResponseEntity<ActuatorTaskDTO> getTask(@PathVariable Long id) {
         return ResponseEntity.ok(service.getTask(id));
+    }
+
+    @DeleteMapping("/{id}/tasks")
+    public ResponseEntity<ActuatorTaskDTO> deleteTask(@PathVariable Long id) {
+        service.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }

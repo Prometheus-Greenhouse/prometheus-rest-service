@@ -4,10 +4,12 @@ import tik.prometheus.rest.constants.ActuatorTaskType
 import tik.prometheus.rest.constants.EUnit
 import tik.prometheus.rest.constants.SensorType
 import tik.prometheus.rest.models.ActuatorTask
+import tik.prometheus.rest.services.SensorService
 
 class ActuatorTaskDTO(
     var sensorId: Long,
     var taskType: ActuatorTaskType,
+    var sensorValue: String?=null,
     var sensorType: SensorType = SensorType.NaN,
     var sensorUnit: EUnit = EUnit.NaN,
     var sensorLabel: String? = null,
@@ -26,6 +28,7 @@ fun ActuatorTask.toDTO(): ActuatorTaskDTO {
         task.sensorType = it.type ?: SensorType.NaN
         task.sensorUnit = it.unit ?: EUnit.NaN
         task.sensorLabel = it.label
+        task.sensorValue = SensorService.sensorTopic(it)
     }
     return task
 }

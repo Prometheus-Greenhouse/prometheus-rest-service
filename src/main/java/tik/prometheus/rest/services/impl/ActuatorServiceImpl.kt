@@ -107,4 +107,10 @@ class ActuatorServiceImpl @Autowired constructor(
         return task.toDTO()
     }
 
+    override fun deleteTask(id: Long) {
+        actuatorRepos.findById(id).ifPresent {
+            it.task.clear()
+            actuatorRepos.save(it)
+        }
+    }
 }
