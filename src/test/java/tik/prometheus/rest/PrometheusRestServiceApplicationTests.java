@@ -24,6 +24,9 @@ class PrometheusRestServiceApplicationTests {
         t1.join();
         t2.join();
     }
+    @Test
+    void testBool(){
+    }
 
     static class LosCaller extends Thread {
         @Override

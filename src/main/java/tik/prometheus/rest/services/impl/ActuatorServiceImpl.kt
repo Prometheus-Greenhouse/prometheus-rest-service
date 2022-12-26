@@ -2,6 +2,7 @@ package tik.prometheus.rest.services.impl
 
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import tik.prometheus.rest.configurations.Configurations
+import tik.prometheus.rest.constants.ActuatorTaskType
 import tik.prometheus.rest.dtos.*
 import tik.prometheus.rest.models.Actuator
 import tik.prometheus.rest.models.ActuatorAllocation
@@ -26,6 +28,7 @@ class ActuatorServiceImpl @Autowired constructor(
     private val greenhouseRepos: GreenhouseRepos,
     private val sensorRepos: SensorRepos
 ) : ActuatorService {
+    val log = LoggerFactory.getLogger(ActuatorServiceImpl::class.java)
 
     override fun getActuators(greenhouseId: Long, pageable: Pageable): Page<ActuatorLiteDTO> {
         val pageEntity = actuatorRepos.findAllWithParams(greenhouseId, pageable)
@@ -84,17 +87,19 @@ class ActuatorServiceImpl @Autowired constructor(
 
     override fun createTask(id: Long, task: ActuatorTaskDTO): ActuatorTaskDTO {
         actuatorRepos.findById(id).ifPresentOrElse({
-            sensorRepos.findById(task.sensorId).orElseThrow { throw ResponseStatusException(HttpStatus.NOT_FOUND, "Sensor ${task.sensorId} not found") }
+            if(task.taskType == ActuatorTaskType.RANGE){
+                sensorRepos.findById(task.sensorId).orElseThrow { throw ResponseStatusException(HttpStatus.NOT_FOUND, "Sensor ${task.sensorId} not found") }
+            }
             it.task.clear()
-            it.task.add(
-                ActuatorTask(
-                    id,
-                    task.sensorId,
-                    task.taskType,
-                    task.startValue,
-                    task.limitValue
-                )
+            val newTask = ActuatorTask(
+                id,
+                task.sensorId,
+                task.taskType,
+                task.startValue,
+                task.limitValue
             )
+            log.info(newTask.toString())
+            it.task.add(newTask)
             actuatorRepos.save(it)
         }, {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Actuator $id not found")

@@ -9,7 +9,7 @@ import tik.prometheus.rest.services.SensorService
 class ActuatorTaskDTO(
     var sensorId: Long,
     var taskType: ActuatorTaskType,
-    var sensorValue: String?=null,
+    var sensorTopic: String?=null,
     var sensorType: SensorType = SensorType.NaN,
     var sensorUnit: EUnit = EUnit.NaN,
     var sensorLabel: String? = null,
@@ -28,7 +28,7 @@ fun ActuatorTask.toDTO(): ActuatorTaskDTO {
         task.sensorType = it.type ?: SensorType.NaN
         task.sensorUnit = it.unit ?: EUnit.NaN
         task.sensorLabel = it.label
-        task.sensorValue = SensorService.sensorTopic(it)
+        task.sensorTopic = SensorService.sensorTopic(it)
     }
     return task
 }

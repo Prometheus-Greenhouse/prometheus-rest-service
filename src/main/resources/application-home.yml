@@ -14,7 +14,7 @@ spring:
     password: Ld201199
     driver-class-name: oracle.jdbc.OracleDriver
   jpa:
-    show-sql: true
+    show-sql: off
     hibernate:
       ddl-auto: validate
     properties:
@@ -26,7 +26,7 @@ spring:
     bootstrap-servers:
       - 192.168.1.7:9092
     consumer:
-      group-id: prometheus
+      group-id: prometheuss
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
 springdoc:
@@ -39,11 +39,11 @@ logging:
     org:
       springframework:
         boot:
-          autoconfigure: debug
+          autoconfigure: info
 broker:
   host: 192.168.1.7
   port: 1883
 server:
   port: 8000
 decisiontree:
-  url: localhost:8001
+  url: 192.168.1.8:8009

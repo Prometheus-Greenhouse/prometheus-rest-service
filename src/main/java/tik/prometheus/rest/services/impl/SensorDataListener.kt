@@ -85,8 +85,10 @@ class SensorDataListener @Autowired constructor(
     }
 
     private fun handleDecisionTreeTask(task: ActuatorTask, sensorData: Float) {
+        println("Handle Decision Tree")
         val restTemplate = RestTemplate()
         val res = restTemplate.getForEntity(decisionTreeUrl + "/decision", JsonObject::class.java, mapOf("sensor_data" to sensorData))
+        println(res.body)
         var run = res.body!!["data"].asString == "N"
         var msg: MqttMessage? = null
         if (run && task.actuator?.isRunning != true) {

@@ -4,6 +4,7 @@ import tik.prometheus.rest.constants.ActuatorType
 import tik.prometheus.rest.models.Actuator
 import tik.prometheus.rest.models.ActuatorAllocation
 import tik.prometheus.rest.reflectionToString
+import tik.prometheus.rest.services.ActuatorService
 import tik.prometheus.rest.services.GreenhouseService
 
 class ActuatorLiteDTO(
@@ -31,6 +32,7 @@ class ActuatorDTO(
     var west: Float? = null,
     var height: Float? = null,
     var label: String,
+    var topic: String?=null,
     var state: ActuatorState = ActuatorState(),
 ) {
     class ActuatorState(
@@ -79,6 +81,7 @@ fun Actuator.toActuatorDTO(): ActuatorDTO {
         height = allo?.height,
         greenhouse = greenhouseDTO,
         label = label ?: "%s".format(localId),
+        topic= ActuatorService.actuatorTopic(this),
         state = ActuatorDTO.ActuatorState(
             isRunning = isRunning
         )
