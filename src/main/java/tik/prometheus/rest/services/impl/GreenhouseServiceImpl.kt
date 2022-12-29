@@ -18,8 +18,6 @@ import tik.prometheus.rest.services.GreenhouseService
 @Service
 class GreenhouseServiceImpl @Autowired constructor(
     private val greenhouseRepos: GreenhouseRepos,
-    private val sensorRepos: SensorRepos,
-    private val actuatorRepos: ActuatorRepos
 ) : GreenhouseService {
     override fun getGreenhouses(farmId: Long?, pageable: Pageable): Page<GreenhouseLiteDTO> {
         val pageEntity = if (farmId != null) greenhouseRepos.findAllWithParams(farmId, pageable) else greenhouseRepos.findAll(pageable)
@@ -38,9 +36,22 @@ class GreenhouseServiceImpl @Autowired constructor(
                 it.length,
                 it.cultivationArea,
                 it.actuatorAllocations.map(ActuatorAllocation::toActuatorLiteDTO),
-                it.sensorAllocations.map(SensorAllocation::toSensorLiteDTO)
+                it.sensorAllocations.map(SensorAllocation::toSensorLiteDTO),
+                it.label
             )
         }.orElseThrow { throw ResponseStatusException(HttpStatus.NOT_FOUND, "No result found") }
     }
 
+    override fun updateGreenhouse(id: Long, greenhouseDTO: GreenhouseDTO): GreenhouseDTO {
+        val gh = greenhouseRepos.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No result found")
+        gh.type = greenhouseDTO.type
+        gh.cultivationArea = greenhouseDTO.cultivationArea
+        gh.area = greenhouseDTO.area
+        gh.height = greenhouseDTO.height
+        gh.width = greenhouseDTO.width
+        gh.length = greenhouseDTO.length
+        gh.label = greenhouseDTO.label
+        greenhouseRepos.saveAndFlush(gh)
+        return gh.toGreenhouseDTO()
+    }
 }

@@ -1,6 +1,8 @@
 package tik.prometheus.rest.dtos
 
+import tik.prometheus.rest.models.ActuatorAllocation
 import tik.prometheus.rest.models.Greenhouse
+import tik.prometheus.rest.models.SensorAllocation
 import tik.prometheus.rest.services.GreenhouseService
 
 class GreenhouseLiteDTO(
@@ -26,6 +28,7 @@ class GreenhouseDTO(
     var cultivationArea: Float,
     var actuators: List<ActuatorLiteDTO> = emptyList(),
     var sensors: List<SensorLiteDTO> = emptyList(),
+    var label: String? = null,
 )
 
 fun Greenhouse.toGreenhouseSummaryDTO(): GreenhouseLiteDTO {
@@ -39,5 +42,21 @@ fun Greenhouse.toGreenhouseSummaryDTO(): GreenhouseLiteDTO {
         length = length,
         cultivationArea = cultivationArea,
         label = label ?: GreenhouseService.greenhouseLabel(this)
+    )
+}
+
+fun Greenhouse.toGreenhouseDTO(): GreenhouseDTO {
+    return GreenhouseDTO(
+        id = id,
+        farmId = farmId,
+        type = type,
+        area = area,
+        height = height,
+        width = width,
+        length = length,
+        cultivationArea = cultivationArea,
+        label = label,
+        actuators = actuatorAllocations.map(ActuatorAllocation::toActuatorLiteDTO),
+        sensors = sensorAllocations.map(SensorAllocation::toSensorLiteDTO),
     )
 }

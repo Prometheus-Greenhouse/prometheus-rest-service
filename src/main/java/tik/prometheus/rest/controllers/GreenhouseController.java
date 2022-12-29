@@ -38,16 +38,8 @@ public class GreenhouseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Greenhouse> replace(@PathVariable Long id, @RequestBody Greenhouse updateGH) {
-        return repos.findById(id).map(greenhouse -> {
-            greenhouse.setType(updateGH.getType());
-            greenhouse.setArea(updateGH.getArea());
-            greenhouse.setCultivationArea(updateGH.getCultivationArea());
-            greenhouse.setHeight(updateGH.getHeight());
-            greenhouse.setWidth(updateGH.getWidth());
-            greenhouse.setLength(updateGH.getLength());
-            return ResponseEntity.ok(repos.save(greenhouse));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<GreenhouseDTO> replace(@PathVariable Long id, @RequestBody GreenhouseDTO updateGH) {
+        return ResponseEntity.ok(service.updateGreenhouse(id, updateGH));
     }
 
     @DeleteMapping("/{id}")
