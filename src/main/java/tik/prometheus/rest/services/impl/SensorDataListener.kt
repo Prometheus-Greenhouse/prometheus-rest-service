@@ -88,7 +88,7 @@ class SensorDataListener @Autowired constructor(
             msg = MqttMessage("0".toByteArray())
             task.actuator?.isRunning = false
         }
-        log.info("Make decision: %s actuator %s".format(if (task.actuator?.isRunning ?: false) "ON " else "OFF", task.actuator?.label))
+        log.info("${LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))} - %s actuator %s".format(if (task.actuator?.isRunning ?: false) "ON " else "OFF", task.actuator?.label))
         sensMqttMessage(task, msg)
     }
 
