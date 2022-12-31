@@ -15,9 +15,9 @@ interface GreenhouseRepos : JpaRepository<Greenhouse, Long> {
         FROM Greenhouse g 
         WHERE (g.farmId = :farmId or :farmId is null)
         AND (g.type = :type or :type is null)
-        AND (g.label LIKE %:label% or :label is null)
+        AND (lower(g.label) LIKE lower(concat('%', :label,'%')) or :label is null)
         """
     )
-    fun findAllWithParams(@Param("farmId") farmId: Long, @Param("label") label: String, @Param("type") type: GreenhouseType, pageable: Pageable): Page<Greenhouse>
+    fun findAllWithParams(@Param("farmId") farmId: Long?, @Param("label") label: String?, @Param("type") type: GreenhouseType?, pageable: Pageable): Page<Greenhouse>
 
 }

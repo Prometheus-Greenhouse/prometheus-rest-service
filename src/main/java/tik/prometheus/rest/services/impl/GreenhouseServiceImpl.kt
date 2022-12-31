@@ -11,17 +11,15 @@ import tik.prometheus.rest.dtos.*
 import tik.prometheus.rest.models.ActuatorAllocation
 import tik.prometheus.rest.models.Greenhouse
 import tik.prometheus.rest.models.SensorAllocation
-import tik.prometheus.rest.repositories.ActuatorRepos
 import tik.prometheus.rest.repositories.GreenhouseRepos
-import tik.prometheus.rest.repositories.SensorRepos
 import tik.prometheus.rest.services.GreenhouseService
 
 @Service
 class GreenhouseServiceImpl @Autowired constructor(
     private val greenhouseRepos: GreenhouseRepos,
 ) : GreenhouseService {
-    override fun getGreenhouses(farmId: Long?,label:String, greenhouseType: GreenhouseType,  pageable: Pageable): Page<GreenhouseLiteDTO> {
-        val pageEntity = if (farmId != null) greenhouseRepos.findAllWithParams(farmId, label, greenhouseType, pageable) else greenhouseRepos.findAll(pageable)
+    override fun getGreenhouses(farmId: Long?, label: String?, greenhouseType: GreenhouseType?, pageable: Pageable): Page<GreenhouseLiteDTO> {
+        val pageEntity = greenhouseRepos.findAllWithParams(farmId, label, greenhouseType, pageable)
         return pageEntity.map(Greenhouse::toGreenhouseSummaryDTO)
     }
 
