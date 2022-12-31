@@ -98,7 +98,6 @@ class ActuatorServiceImpl @Autowired constructor(
                 task.startValue,
                 task.limitValue
             )
-            log.info(newTask.toString())
             it.task.add(newTask)
             actuatorRepos.save(it)
         }, {

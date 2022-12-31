@@ -186,7 +186,6 @@ class OracleStartup @Autowired constructor(
     }
 
     private fun createIrrigatorRecord(actuator: Actuator, date: LocalDateTime) {
-        println("insert --->")
         irrigatorRecordRepos.save(
             NutrientIrrigatorRecord(
                 actuatorId = actuator.id,
