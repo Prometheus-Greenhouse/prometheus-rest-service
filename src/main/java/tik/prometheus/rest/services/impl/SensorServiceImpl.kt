@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import tik.prometheus.rest.constants.SensorType
 import tik.prometheus.rest.dtos.SensorDTO
 import tik.prometheus.rest.dtos.SensorLiteDTO
 import tik.prometheus.rest.dtos.toSensorDTO
@@ -27,8 +28,8 @@ class SensorServiceImpl @Autowired constructor(
     private val greenhouseRepos: GreenhouseRepos,
     private val entityManager: EntityManager
 ) : SensorService {
-    override fun getSensors(pageable: Pageable, greenhouseId: Long?): Page<SensorLiteDTO> {
-        val pageEntity = repos.findAllWithParams(greenhouseId, pageable)
+    override fun getSensors(pageable: Pageable, greenhouseId: Long?, type: SensorType?): Page<SensorLiteDTO> {
+        val pageEntity = repos.findAllWithParams(greenhouseId, type, pageable)
         return pageEntity.map(Sensor::toSensorLiteDTO)
     }
 

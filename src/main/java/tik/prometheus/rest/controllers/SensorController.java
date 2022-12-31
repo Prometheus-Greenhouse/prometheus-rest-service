@@ -1,11 +1,13 @@
 package tik.prometheus.rest.controllers;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tik.prometheus.rest.constants.SensorType;
 import tik.prometheus.rest.dtos.SensorDTO;
 import tik.prometheus.rest.dtos.SensorLiteDTO;
 import tik.prometheus.rest.repositories.SensorRepos;
@@ -24,8 +26,12 @@ public class SensorController {
     SensorService sensorService;
 
     @GetMapping()
-    public ResponseEntity<Page<SensorLiteDTO>> getSensors(Pageable pageable, @RequestParam(required = false) Long greenhouseId) {
-        return ResponseEntity.ok(sensorService.getSensors(pageable, greenhouseId));
+    public ResponseEntity<Page<SensorLiteDTO>> getSensors(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) Long greenhouseId,
+            @RequestParam(required = false) SensorType type
+    ) {
+        return ResponseEntity.ok(sensorService.getSensors(pageable, greenhouseId, type));
     }
 
     @GetMapping("/{id}")
@@ -37,12 +43,6 @@ public class SensorController {
     @Transactional
     public ResponseEntity<SensorDTO> replaceSensor(@PathVariable Long id, @RequestBody SensorDTO updateSensor) {
         return ResponseEntity.ok(sensorService.updateSensor(id, updateSensor));
-//        return sensorRepos.findById(id).map(sensor -> {
-//            sensor.setAddress(updateSensor.getAddress());
-//            sensor.setType(updateSensor.getType());
-//            sensor.setUnit(updateSensor.getUnit());
-//            return ResponseEntity.ok(sensorRepos.save(sensor));
-//        }).orElseGet(() -> ResponseEntity.notFound().build());
 
     }
 
@@ -56,7 +56,7 @@ public class SensorController {
     public ResponseEntity getSensorRecords(
             @PathVariable Long id,
             @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-            @RequestParam(value = "to", required = false)  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to
+            @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to
     ) {
         return ResponseEntity.ok(sensorService.getSensorRecords(id, from, to));
     }
