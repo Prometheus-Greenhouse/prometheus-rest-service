@@ -5,5 +5,6 @@ enum class SensorType(val value: String) {
     TEMPERATURE("TEMPERATURE"),
     SOIL_MOISTURE("SOIL_MOISTURE"),
     WATER("WATER"),
+    LIGHT("LIGHT"),
     NaN("NaN")
 }
