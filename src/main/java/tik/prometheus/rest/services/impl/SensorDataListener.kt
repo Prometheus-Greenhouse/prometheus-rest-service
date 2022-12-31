@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import org.apache.avro.generic.GenericData
 import org.apache.avro.util.Utf8
 import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
@@ -18,19 +19,22 @@ import tik.prometheus.rest.MqttClientFactory
 import tik.prometheus.rest.constants.ActuatorTaskType
 import tik.prometheus.rest.models.ActuatorTask
 import tik.prometheus.rest.repositories.ActuatorRepos
-import tik.prometheus.rest.repositories.DecisionTreeRepos
-import tik.prometheus.rest.repositories.SensorRecordRepos
+import tik.prometheus.rest.repositories.SensorRepos
 import tik.prometheus.rest.services.ActuatorService
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 
 @Component
 class SensorDataListener @Autowired constructor(
-    val sensorRecordRepos: SensorRecordRepos,
     val actuatorRepos: ActuatorRepos,
     val mqttClientFactory: MqttClientFactory,
-    val decisionTreeRepos: DecisionTreeRepos,
+    val sensorRepos: SensorRepos,
     @Value("\${decisiontree.url}")
     val decisionTreeUrl: String
 ) {
+    val log = LoggerFactory.getLogger(SensorDataListener::class.java)
 
     @KafkaListener(
         id = "class-level",
@@ -52,12 +56,16 @@ class SensorDataListener @Autowired constructor(
         val recordId = key.toFloat().toLong()
 
         val sensorData: Float
+        val timeStamp: LocalDateTime
         try {
             sensorData = (message["SENSOR_DATA"] as Utf8).toString().toFloat()
+            timeStamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(message["UPDATE_TS"] as Long), TimeZone.getDefault().toZoneId())
         } catch (e: Exception) {
             return
         }
-        println("Kafka received record $recordId $sensorData")
+        sensorRepos.findByRecord(recordId).ifPresent {
+            log.info("${timeStamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))} - id: %-${2}s label: %-${20}s type: %-${13}s data: %${4}s".format(it.id, it.label, it.type, sensorData))
+        }
         val tasks = actuatorRepos.findActuatorTaskBySensorRecord(recordId)
         tasks.forEach { resolveTask(it, sensorData) }
     }
@@ -73,7 +81,6 @@ class SensorDataListener @Autowired constructor(
     private fun handleRangeTask(task: ActuatorTask, sensorData: Float) {
         val isOuterOfRange = isOuterOfRangeSensorValue(task, sensorData)
         var msg: MqttMessage? = null
-        println("${!isOuterOfRange} ${task.actuator?.isRunning != false}")
         if (isOuterOfRange && (task.actuator?.isRunning != true)) {
             msg = MqttMessage("1".toByteArray())
             task.actuator?.isRunning = true
@@ -85,10 +92,8 @@ class SensorDataListener @Autowired constructor(
     }
 
     private fun handleDecisionTreeTask(task: ActuatorTask, sensorData: Float) {
-        println("Handle Decision Tree")
         val restTemplate = RestTemplate()
         val res = restTemplate.getForEntity(decisionTreeUrl + "/decision", JsonObject::class.java, mapOf("sensor_data" to sensorData))
-        println(res.body)
         var run = res.body!!["data"].asString == "N"
         var msg: MqttMessage? = null
         if (run && task.actuator?.isRunning != true) {
@@ -105,7 +110,6 @@ class SensorDataListener @Autowired constructor(
         if (msg != null) {
             actuatorRepos.saveAndFlush(task.actuator!!)
             val topic = ActuatorService.actuatorTopic(task.actuator!!)
-            println("pub actuator $topic $msg")
             val client = mqttClientFactory.create()
             msg.qos = 1
             msg.isRetained = true

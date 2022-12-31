@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import tik.prometheus.rest.constants.SensorType;
 import tik.prometheus.rest.models.Sensor;
 
+import java.util.Optional;
+
 @Repository
 public interface SensorRepos extends JpaRepository<Sensor, Long> {
     @Query("""
@@ -20,5 +22,11 @@ public interface SensorRepos extends JpaRepository<Sensor, Long> {
             """)
     Page<Sensor> findAllWithParams(@Param("greenhouseId") Long greenhouseId, @Param("type") SensorType sensorType, Pageable pageable);
 
-
+    @Query("""
+            SELECT s
+            FROM Sensor s
+            LEFT JOIN SensorRecord sr ON sr.sensorId = s.id
+            WHERE sr.id = :recordId
+            """)
+    Optional<Sensor> findByRecord(@Param("recordId") Long recordId);
 }
