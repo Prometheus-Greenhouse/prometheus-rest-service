@@ -1,5 +1,6 @@
 package tik.prometheus.rest.dtos
 
+import tik.prometheus.rest.constants.GreenhouseType
 import tik.prometheus.rest.models.ActuatorAllocation
 import tik.prometheus.rest.models.Greenhouse
 import tik.prometheus.rest.models.SensorAllocation
@@ -8,7 +9,7 @@ import tik.prometheus.rest.services.GreenhouseService
 class GreenhouseLiteDTO(
     var id: Long? = null,
     var farmId: Long? = null,
-    var type: String,
+    var type: GreenhouseType,
     var label: String?,
     var area: Float,
     var height: Float,
@@ -20,7 +21,7 @@ class GreenhouseLiteDTO(
 class GreenhouseDTO(
     var id: Long? = null,
     var farmId: Long? = null,
-    var type: String,
+    var type: GreenhouseType,
     var area: Float,
     var height: Float,
     var width: Float,

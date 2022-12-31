@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import tik.prometheus.rest.constants.GreenhouseType
 import tik.prometheus.rest.dtos.*
 import tik.prometheus.rest.models.ActuatorAllocation
 import tik.prometheus.rest.models.Greenhouse
@@ -19,8 +20,8 @@ import tik.prometheus.rest.services.GreenhouseService
 class GreenhouseServiceImpl @Autowired constructor(
     private val greenhouseRepos: GreenhouseRepos,
 ) : GreenhouseService {
-    override fun getGreenhouses(farmId: Long?, pageable: Pageable): Page<GreenhouseLiteDTO> {
-        val pageEntity = if (farmId != null) greenhouseRepos.findAllWithParams(farmId, pageable) else greenhouseRepos.findAll(pageable)
+    override fun getGreenhouses(farmId: Long?,label:String, greenhouseType: GreenhouseType,  pageable: Pageable): Page<GreenhouseLiteDTO> {
+        val pageEntity = if (farmId != null) greenhouseRepos.findAllWithParams(farmId, label, greenhouseType, pageable) else greenhouseRepos.findAll(pageable)
         return pageEntity.map(Greenhouse::toGreenhouseSummaryDTO)
     }
 

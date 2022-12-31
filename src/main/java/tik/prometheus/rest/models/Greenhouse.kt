@@ -10,7 +10,8 @@ class Greenhouse(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
     var farmId: Long? = null,
-    var type: String = GreenhouseType.NORMAL.value,
+    @Enumerated(EnumType.STRING)
+    var type: GreenhouseType = GreenhouseType.NORMAL,
     var area: Float = 0f,
     var height: Float = 0f,
     var width: Float = 0f,
