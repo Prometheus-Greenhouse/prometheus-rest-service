@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: prometheus-rest
@@ -42,6 +41,8 @@ logging:
           autoconfigure: info
       hibernate:
         sql: off
+        persister:
+          entity: off
         type:
           descriptor:
             sql: off
