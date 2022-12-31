@@ -40,6 +40,11 @@ logging:
       springframework:
         boot:
           autoconfigure: info
+      hibernate:
+        sql: off
+        type:
+          descriptor:
+            sql: off
 broker:
   host: 192.168.1.7
   port: 1883

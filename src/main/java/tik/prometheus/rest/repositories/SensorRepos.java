@@ -15,9 +15,8 @@ public interface SensorRepos extends JpaRepository<Sensor, Long> {
             SELECT s
             FROM Sensor s
             LEFT JOIN SensorAllocation sa ON s.id = sa.sensorId
-            LEFT JOIN Greenhouse gh ON gh.id = sa.greenhouseId
-            WHERE gh.id = :greenhouseId or :greenhouseId is null
-            AND s.type = :type or :type is null
+            WHERE (sa.greenhouseId = :greenhouseId or :greenhouseId is null)
+            AND (s.type = :type or :type is null)
             """)
     Page<Sensor> findAllWithParams(@Param("greenhouseId") Long greenhouseId, @Param("type") SensorType sensorType, Pageable pageable);
 
