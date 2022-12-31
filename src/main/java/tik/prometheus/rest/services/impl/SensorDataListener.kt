@@ -24,7 +24,7 @@ import tik.prometheus.rest.services.ActuatorService
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.TimeZone
+import java.util.*
 
 @Component
 class SensorDataListener @Autowired constructor(
@@ -88,6 +88,7 @@ class SensorDataListener @Autowired constructor(
             msg = MqttMessage("0".toByteArray())
             task.actuator?.isRunning = false
         }
+        log.info("Make decision: %s actuator %s".format(if (task.actuator?.isRunning ?: false) "ON " else "OFF", task.actuator?.label))
         sensMqttMessage(task, msg)
     }
 
